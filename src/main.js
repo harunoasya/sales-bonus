@@ -24,6 +24,14 @@ function calculateBonusByProfit(index, total, seller) {
 
 function analyzeSalesData(data, options) {
 
+    if (!data.products || data.products.length === 0) {
+        throw new Error("Массив Products пуст");
+    }
+
+    if (!data.purchase_records || data.purchase_records.length === 0) {
+        throw new Error("Массив purchase_records пуст");
+    }
+
     if (!data || typeof data !== "object") {
         throw new Error("Некорректные входные данные");
     };
@@ -78,11 +86,11 @@ function analyzeSalesData(data, options) {
             const product = productIndex[item.sku];
             if (!product) return;
         
-            const revenue = calculateRevenue(item);
-            const profit = calculateSimpleRevenue(item, product) - product.purchase_price * item.quantity;
+            const revenue = +calculateRevenue(item).toFixed(2);
+            const profit = +(calculateSimpleRevenue(item, product) - product.purchase_price * item.quantity).toFixed(2);
 
-            seller.revenue += revenue;
-            seller.profit += profit;
+            seller.revenue = +(seller.revenue + revenue).toFixed(2);
+            seller.profit = +(seller.profit + profit).toFixed(2);
 
             if (!seller.top_products[item.sku]) {
                 seller.top_products[item.sku] = 0;

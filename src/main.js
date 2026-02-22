@@ -72,6 +72,7 @@ function analyzeSalesData(data, options) {
     data.purchase_records.forEach(receipt => {
         const seller = sellerIndex[receipt.seller_id];
         
+        seller.sales_count += 1;
         
         receipt.items.forEach(item => {
             const product = productIndex[item.sku];
@@ -82,7 +83,6 @@ function analyzeSalesData(data, options) {
 
             seller.revenue += revenue;
             seller.profit += profit;
-            seller.sales_count += item.quantity;
 
             if (!seller.top_products[item.sku]) {
                 seller.top_products[item.sku] = 0;

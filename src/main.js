@@ -87,10 +87,10 @@ function analyzeSalesData(data, options) {
             if (!product) return;
         
             const revenue = +calculateRevenue(item).toFixed(2);
-            const profit = +(calculateSimpleRevenue(item, product) - product.purchase_price * item.quantity).toFixed(2);
+            const profit = calculateSimpleRevenue(item, product) - product.purchase_price * item.quantity;
 
             seller.revenue = +(seller.revenue + revenue).toFixed(2);
-            seller.profit = +(seller.profit + profit).toFixed(2);
+            seller.profit = seller.profit + profit;
 
             if (!seller.top_products[item.sku]) {
                 seller.top_products[item.sku] = 0;

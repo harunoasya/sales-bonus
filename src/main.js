@@ -1,22 +1,8 @@
-/**
- * Функция для расчета выручки
- * @param purchase запись о покупке
- * @param _product карточка товара
- * @returns {number}
- */
 function calculateSimpleRevenue(purchase, _product) {
-   // @TODO: Расчет выручки от операции
    const { discount, sale_price, quantity } = purchase;
-   return sale_price * quantity * (1 - discount / 100) - _product.purchase_price * quantity;
+   return sale_price * quantity * (1 - discount / 100);
 }
 
-/**
- * Функция для расчета бонусов
- * @param index порядковый номер в отсортированном массиве
- * @param total общее число продавцов
- * @param seller карточка продавца
- * @returns {number}
- */
 function calculateBonusByProfit(index, total, seller) {
     const { profit } = seller;
 
@@ -35,12 +21,7 @@ function calculateBonusByProfit(index, total, seller) {
   return profit * 0.05;
 };
 
-/**
- * Функция для анализа данных продаж
- * @param data
- * @param options
- * @returns {{revenue, top_products, bonus, name, sales_count, profit, seller_id}[]}
- */
+
 function analyzeSalesData(data, options) {
 
     if (!data || typeof data !== "object") {
@@ -61,7 +42,6 @@ function analyzeSalesData(data, options) {
 
     if (!calculateRevenue || !calculateBonus) {
         throw new Error("В опциях отсутствуют необходимые функции");
-
     };
 
    if (typeof calculateRevenue !== "function" ||
@@ -91,14 +71,14 @@ function analyzeSalesData(data, options) {
 
     data.purchase_records.forEach(receipt => {
         const seller = sellerIndex[receipt.seller_id];
-        if (!seller) return;
+        
         
         receipt.items.forEach(item => {
             const product = productIndex[item.sku];
             if (!product) return;
-
-            const revenue = calculateRevenue(item, product);
-            const profit = calculateSimpleRevenue(item, product);
+        
+            const revenue = calculateRevenue(item);
+            const profit = calculateSimpleRevenue(item, product) - product.purchase_price * item.quantity;
 
             seller.revenue += revenue;
             seller.profit += profit;
